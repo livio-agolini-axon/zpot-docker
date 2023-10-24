@@ -1,0 +1,33 @@
+version: "3.9"
+name: "zpot"
+services:
+  postgres:
+    build:
+      context: db
+      dockerfile: Dockerfile
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=super_strong_secret_password
+      - POSTGRES_DB=zpot_postgres
+    volumes:
+      - "./db/postgres-data-zpot:/var/lib/postgresql/data"
+  mongo:
+    image: mongo:3.4
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_PASSWORD=super_strong_secret_password
+    volumes:
+      - "/var/lib/mongo/data"
+  rabbitmq:
+    build:
+      dockerfile: ./rabbitmq/Dockerfile
+    container_name: rabbitmq
+    ports:
+      - "15671:15671"
+      - "15672:15672"
