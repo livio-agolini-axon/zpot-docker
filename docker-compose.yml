@@ -15,16 +15,27 @@ services:
     volumes:
       - "./db/postgres-data-zpot:/var/lib/postgresql/data"
   mongo:
-    image: mongo:3.4
+    image: mongo:3.6
     container_name: mongo
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=mongo
+      - MONGO_INITDB_ROOT_USERNAME=zpot_mongo
       - MONGO_INITDB_ROOT_PASSWORD=super_strong_secret_password
       - MONGO_INITDB_DATABASE=test
     volumes:
       - "/var/lib/mongo/data"
+  mongo-express:
+    image: mongo-express
+    container_name: mongo_ui
+    ports:
+      - "27018:8081"
+    environment:
+      - ME_CONFIG_BASICAUTH_USERNAME=root
+      - ME_CONFIG_BASICAUTH_PASSWORD=root
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=zpot_mongo
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=super_strong_secret_password
+      - ME_CONFIG_MONGODB_URL=mongodb://zpot_mongo:super_strong_secret_password@mongo:27017/
   rabbitmq:
     build:
       dockerfile: ./rabbitmq/Dockerfile
@@ -33,3 +44,14 @@ services:
       - "5672:5672"
       - "15671:15671"
       - "15672:15672"
+  minio:
+    image: bitnami/minio:2023.10.25
+    container_name: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=zpot_minio
+      - MINIO_ROOT_PASSWORD=super_strong_secret_password
+    volumes:
+      - "./db/minio-data-zpot:/bitnami/minio/data"
