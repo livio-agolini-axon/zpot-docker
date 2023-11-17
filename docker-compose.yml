@@ -15,7 +15,7 @@ services:
     volumes:
       - "./db/postgres-data-zpot:/var/lib/postgresql/data"
   mongo:
-    image: mongo:3.6
+    image: mongo:4.0.28
     container_name: mongo
     ports:
       - "27017:27017"
@@ -24,6 +24,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=super_strong_secret_password
       - MONGO_INITDB_DATABASE=test
     volumes:
+      - "./mongo/init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro"
       - "/var/lib/mongo/data"
   mongo-express:
     image: mongo-express
